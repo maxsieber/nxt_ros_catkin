@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
    
     <node pkg="nxt_ros" type="nxt_ros.py" name="nxt_ros" output="screen" respawn="true">
