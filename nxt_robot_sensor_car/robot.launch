@@ -6,7 +6,7 @@
 
     <param name="robot_description" textfile="$(find nxt_robot_sensor_car)/robot.urdf"/>
      
-    <node pkg="nxt_ros" type="joint_states_aggregator.py" name="js_agg" output="screen" />
+    <node pkg="nxt_ros" type="joint_states_aggregator.py" name="js_agg" output="screen"  respawn="true"/>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
       <param name="publish_frequency" value="2.0"/>
     </node>
@@ -19,13 +19,13 @@
       <param name="vel_to_eff" value="0.4"/>
     </group>
        <!-- base controller -->
-    <node pkg="nxt_controllers" type="base_controller.py" name="base_controller" output="screen"/>
+    <node pkg="nxt_controllers" type="base_controller.py" name="base_controller" output="screen" respawn="true"/>
 
           <!-- base odometry -->
-    <node pkg="nxt_controllers" type="base_odometry.py" name="base_odometry" output="screen"/>
+    <node pkg="nxt_controllers" type="base_odometry.py" name="base_odometry" output="screen" respawn="true"/>
       
     <!-- robot pose ekf >
-    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" respawn="true">
       <remap from="imu_data" to="gyro_imu" />
     </node-->
 
@@ -38,6 +38,12 @@
         <param name="image_height" value="120" />
         <!--param name="auto_focus" value="0" /-->
         <param name="pixel_format" value="mjpeg" />
+    </node>
+
+    <!-- point cloud converter -->
+    <node pkg="nxt_assisted_teleop" type="range_to_pointcloud.py" name="range_to_pointcloud" respawn="true">
+      <remap from="range_topic" to="ultrasonic_sensor" />
+      <remap from="cloud_topic" to="point_cloud" />
     </node>
 
 </launch>
