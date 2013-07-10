@@ -92,6 +92,7 @@ void NxtTeleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 void NxtTeleop::publish()
 {
   boost::mutex::scoped_lock lock(publish_mutex_);  
+  deadman_pressed_ = true;
   if (deadman_pressed_)
     {
       vel_pub_.publish(last_published_);
