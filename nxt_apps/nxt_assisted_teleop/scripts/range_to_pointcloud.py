@@ -5,8 +5,7 @@ import nxt.locator
 import rospy
 import math
 import thread
-from sensor_msgs.msg import PointCloud
-from nxt_msgs.msg import Range
+from sensor_msgs.msg import PointCloud, Range
 from geometry_msgs.msg import Point32
 from math import sin, cos
 
@@ -19,9 +18,9 @@ class Converter:
         pnt = PointCloud()
         pnt.header = msg.header
         angle_step = 1.0/(msg.range*100.0)
-        angle = -msg.spread_angle
-        if msg.range < msg.range_max and msg.range > msg.range_min:
-            while angle < msg.spread_angle:
+        angle = -msg.field_of_view
+        if msg.range < msg.max_range and msg.range > msg.min_range:
+            while angle < msg.field_of_view:
                 pnt.points.append(Point32(msg.range*cos(angle), msg.range*sin(angle), 0))
                 angle += angle_step
         self.pub.publish(pnt)
