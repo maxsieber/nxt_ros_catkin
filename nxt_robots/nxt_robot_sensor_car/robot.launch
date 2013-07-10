@@ -3,7 +3,6 @@
    
     <node pkg="nxt_ros" type="nxt_ros.py" name="nxt_ros" output="screen" respawn="true">
       <rosparam command="load" file="$(find nxt_robot_sensor_car)/robot.yaml" />    
-      <remap from="ultrasonic_sensor" to="range"/>
     </node>
 
     <param name="robot_description" textfile="$(find nxt_robot_sensor_car)/robot.urdf"/>
@@ -18,7 +17,7 @@
       <param name="l_wheel_joint" value="l_wheel_joint"/>
       <param name="wheel_radius" value="0.022"/>
       <param name="wheel_basis" value="0.055"/>
-      <param name="vel_to_eff" value="0.5"/>
+      <param name="vel_to_eff" value="0.4"/>
     </group>
        <!-- base controller -->
     <node pkg="nxt_controllers" type="base_controller.py" name="base_controller" output="screen"/>
@@ -34,5 +33,12 @@
     <!-- fixed transform -->
     <node pkg="tf" type="static_transform_publisher" name="base_footprint_fixed_publisher" args="0 0 0 0 0 0 base_footprint base_link 100"/>
 
+    <node name="logitech_usb_webcam" pkg="usb_cam" type="usb_cam_node" respawn="true" >
+        <param name="video_device" value="/dev/video0" />
+        <param name="image_width" value="160" />
+        <param name="image_height" value="120" />
+        <!--param name="auto_focus" value="0" /-->
+        <param name="pixel_format" value="mjpeg" />
+    </node>
 
 </launch>
