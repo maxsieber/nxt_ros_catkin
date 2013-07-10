@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
    
     <node pkg="nxt_ros" type="nxt_ros.py" name="nxt_ros" output="screen" respawn="true">
@@ -33,18 +32,14 @@
     <!-- fixed transform -->
     <node pkg="tf" type="static_transform_publisher" name="base_footprint_fixed_publisher" args="0 0 0 0 0 0 base_footprint base_link 100"/>
 
-    <node name="logitech_usb_webcam" pkg="usb_cam" type="usb_cam_node" respawn="true" >
+    <!--node name="logitech_usb_webcam" pkg="usb_cam" type="usb_cam_node" respawn="true" >
         <param name="video_device" value="/dev/video0" />
         <param name="image_width" value="160" />
         <param name="image_height" value="120" />
-        <!--param name="auto_focus" value="0" /-->
+        <param name="auto_focus" value="0" />
         <param name="pixel_format" value="mjpeg" />
-    </node>
+    </node-->
 
-    <!-- point cloud converter -->
-    <node pkg="nxt_assisted_teleop" type="range_to_pointcloud.py" name="range_to_pointcloud" respawn="true">
-      <remap from="range_topic" to="ultrasonic_sensor" />
-      <remap from="cloud_topic" to="point_cloud" />
-    </node>
+
 
 </launch>
