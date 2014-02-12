@@ -11,28 +11,9 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-## This plugin includes Qt widgets, so we must include Qt like so:
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
-
-## I prefer the Qt signals and slots to avoid defining "emit", "slots",
-## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
-add_definitions(-DQT_NO_KEYWORDS)
-
-## Here we specify which header files need to be run through "moc",
-## Qt's meta-object compiler.
-#qt4_wrap_cpp(MOC_FILES
-#  src/nxt_ultrasonic_display.h
-#  src/nxt_color_display.h
-#)
-
-set(SOURCE_FILES 
-  src/nxt_ultrasonic_display.cpp
-src/nxt_ultrasonic_visual.cpp
-  src/nxt_color_display.cpp
-  src/nxt_color_visual.cpp 
-#  ${MOC_FILES}
-)
+set(SOURCE_FILES src/nxt_ultrasonic_display.cpp
+                 src/nxt_color_display.cpp 
+                 src/init.cpp)
 
 
 include(CMakeDetermineSystem)

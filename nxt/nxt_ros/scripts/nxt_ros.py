@@ -37,16 +37,18 @@ import roslib; roslib.load_manifest('nxt_ros')
 import nxt.locator
 import rospy
 import math
+import time
 from nxt.motor import PORT_A, PORT_B, PORT_C
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 from nxt.sensor import Type
 import nxt.sensor 
 import nxt.motor 
 import thread
-from sensor_msgs.msg import JointState, Imu
+from sensor_msgs.msg import JointState, Imu, Range
 from std_msgs.msg import Bool
-from nxt_msgs.msg import Range, Contact, JointCommand, Color, Gyro, Accelerometer
+from nxt_msgs.msg import Contact, JointCommand, Color, Gyro, Accelerometer
 from PyKDL import Rotation
+import nxt.execute
 
 POWER_TO_NM = 0.01
 POWER_MAX = 125
@@ -60,6 +62,8 @@ def check_params(ns, params):
             return False
     return True
 
+def shutdown(self):
+    pass 
 
 # base class for sensors
 class Device:
@@ -104,7 +108,29 @@ class Device:
           rospy.logwarn("caught an exception nxt.error.I2CError")
           pass
 
-
+class Execute():
+    def __init__(self, params, comm):
+        self.name = params['name']
+        self.execute = nxt.execute.Execute(comm, params['file'])
+        self.start()
+    
+    #Need better handling
+    #Joint states is reseted on Executable End!!
+    def needs_trigger(self):
+        return False
+        
+    def start(self):
+        '''
+Starts a Program.'''
+        self.execute.start_program()
+        time.sleep(0.1)
+        
+    def stop(self):
+        '''
+Stop Program'''
+        self.execute.stop_program()
+        
+        
 class Motor(Device):
     def __init__(self, params, comm):
         Device.__init__(self, params)
@@ -119,7 +145,10 @@ class Motor(Device):
         
         # create subscriber
         self.sub = rospy.Subscriber('joint_command', JointCommand, self.cmd_cb, None, 2)
-
+        
+    def __exit__(self):
+        rospy.loginf("stopping Motors here?")
+        self.motor.run(0, 0)
 
     def cmd_cb(self, msg):
         if msg.name == self.name:
@@ -188,12 +217,12 @@ class UltraSonicSensor(Device):
         
     def trigger(self):
         ds = Range()
-        ds.header.frame_id = self.frame_id
+        ds.header.frame_id = '/ultrasonic_link'
         ds.header.stamp = rospy.Time.now()
         ds.range = self.ultrasonic.get_sample()/100.0
-        ds.spread_angle = self.spread
-        ds.range_min = self.min_range
-        ds.range_max = self.max_range
+        ds.field_of_view = self.spread
+        ds.min_range = self.min_range
+        ds.max_range = self.max_range
         self.pub.publish(ds)
  
 
@@ -382,6 +411,8 @@ def main():
             components.append(GyroSensor(c, b))
         elif c['type'] == 'accelerometer':
             components.append(AccelerometerSensor(c, b))
+        elif c['type'] == 'execute':
+            components.append(Execute(c, b))
         else:
             rospy.logerr('Invalid sensor/actuator type %s'%c['type'])
 
@@ -399,6 +430,7 @@ def main():
         if (now - last_callback_handle).to_sec() > 1.0/callback_handle_frequency:
             last_callback_handle = now
             rospy.sleep(0.01)
+    rospy.on_shutdown(shutdown)
 
 
 
