@@ -11,7 +11,7 @@ nxt_robot:
     name: m_wheel_joint
     port: PORT_C
     desired_frequency: 1.0
-  - type: gyro
+  - type: touch
     name: gyro
     frame_id: gyro_link
     port: PORT_3
