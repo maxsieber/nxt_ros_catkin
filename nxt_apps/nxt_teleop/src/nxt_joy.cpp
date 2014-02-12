@@ -29,7 +29,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
-#include <sensor_msgs/Joy.h>
+#include "sensor_msgs/Joy.h"
 #include "boost/thread/mutex.hpp"
 #include "boost/thread/thread.hpp"
 #include "ros/console.h"
@@ -92,6 +92,7 @@ void NxtTeleop::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 void NxtTeleop::publish()
 {
   boost::mutex::scoped_lock lock(publish_mutex_);  
+  deadman_pressed_ = true; //deadman implementation sucks
   if (deadman_pressed_)
     {
       vel_pub_.publish(last_published_);

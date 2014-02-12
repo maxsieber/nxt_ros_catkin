@@ -1,10 +1,10 @@
 <launch>
 
-  <!-- point cloud converter -->
-  <node pkg="nxt_assisted_teleop" type="range_to_pointcloud.py" name="range_to_pointcloud">
-    <remap from="range_topic" to="ultrasonic_sensor" />
-    <remap from="cloud_topic" to="point_cloud" />
-  </node>
+    <!-- point cloud converter -->
+    <node pkg="nxt_assisted_teleop" type="range_to_pointcloud.py" name="range_to_pointcloud" respawn="true">
+      <remap from="range_topic" to="ultrasonic_sensor" />
+      <remap from="cloud_topic" to="point_cloud" />
+    </node>
 
   <!-- joy node -->
   <node respawn="true" pkg="joy"

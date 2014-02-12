@@ -22,7 +22,7 @@ planner:
 costmap:
   map_type: costmap
   publish_voxel_map: true
-  global_frame: odom_combined
+  global_frame: odom
   robot_base_frame: base_link
   update_frequency: 5.0
   publish_frequency: 2.0
